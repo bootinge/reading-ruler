@@ -1,13 +1,17 @@
-//console.log('CALLED');
+//---------------------------------------------------------------------
+// (C) Copyright 2014 Denison Linus
+//
+// Author: Denison Linus
+// Email: dlmtavar@gmail.com
+//
+//---------------------------------------------------------------------
 
 var highlighter = {
 	
     ExtentionsEnabled: false,
     Enabled: false,
-	//Elements: ':header, p, li, address, dl, pre',//tr blockquote
-    //Elements: ':header, p, pre:not(:has(code)), code',
     Elements: ':header, p, pre',
-	HightlighterID: 'highlighter',
+    HightlighterID: 'highlighter',
     Opacity: 0.2,
     MaxZIndex: 2147483647,
 	
@@ -78,13 +82,6 @@ var highlighter = {
             }
             return hash;
         };
-        /*var guid = function() {
-            function _p8(s) {
-                var p = (Math.random().toString(16)+"000000000").substr(2,8);
-                return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p ;
-            }
-            return _p8() + _p8(true) + _p8(true) + _p8();
-        };*/
         var clamp = function (low, high, value) {
             return Math.min(Math.max(value,low), high);
         };        
@@ -94,18 +91,14 @@ var highlighter = {
                 this.cache = {};
             }
             var all = window.getComputedStyle(ele),
-                //styles = {font: all.font, lineHeight: all.lineHeight, margin: all.margin, padding: all.padding, border: all.border}
                 styles = {font: all.font}
                 hash = hashKey(JSON.stringify(styles))
             ;
             if(!(hash in this.cache)) {
-                //this.$fake[0].style.font = styles.font;
-                //this.$fake[0].style[key] = val for key, val of styles;
                 for(key in styles) {
                     this.$fake[0].style[key] = styles[key];
                 }
                 this.cache[hash] = this.$fake.height();
-                //this.cache[hash] = this.$fake[0].getBoundingClientRect().height;
             }
             return this.cache[hash];
         };
@@ -166,7 +159,6 @@ var highlighter = {
                     all = window.getComputedStyle(Items[i]),
                     paddingTop = parseFloat(all.paddingTop.replace('px', ''));
                     paddingBottom = parseFloat(all.paddingBottom.replace('px', ''));
-                    //console.log(paddingTop, paddingBottom);
                     height = textHeight(Items[i]);
                     width = rect.width;
                     left = rect.left + scrollLeft;
@@ -181,10 +173,8 @@ var highlighter = {
             Index = index;
         };
         var scrollPage = function(top) {
-            //(debouncer(function() {
-                $('html,body').animate({'scrollTop' : top}, 200);
-                //window.scrollTo(0,top);
-            //}, 300))();
+            $('html,body').animate({'scrollTop' : top}, 200);
+            //window.scrollTo(0,top);
         };
         var moveElement = function(inc) {
             if(!self.Enabled || !self.ExtentionsEnabled) {
@@ -294,7 +284,6 @@ var highlighter = {
             
         });
         
-        //console.log('constructor');
         self.createHighLighter();
         createItems();
         makeIndex();
@@ -305,7 +294,6 @@ var highlighter = {
 
 function startHighlighter() {
     if(!this.Created) {
-        //console.log('create!');
         highlighter.create();
         this.Created = true;
     }
@@ -325,10 +313,8 @@ function stopHighlighter() {
         chrome.storage.local.get('lh_is_enabled', function(items) {
             var lh_is_enabled = ('lh_is_enabled' in items) ? items['lh_is_enabled'] : false;
             if (lh_is_enabled){
-                //console.log('start!');
                 startHighlighter();
             } else {
-                //console.log('stop!');
                 stopHighlighter();
             }
         });
@@ -336,15 +322,12 @@ function stopHighlighter() {
         chrome.storage.onChanged.addListener(function(changes, namespace) {
             var lh_is_enabled = ('lh_is_enabled' in changes) ? changes['lh_is_enabled'] : false;
             if(lh_is_enabled.newValue) {
-                //console.log('start2!');
                 startHighlighter();
             } else {
-                //console.log('stop2!');
                 stopHighlighter();
             }
         });        
     
-    });	
-
+    });
 
 })(window.jQuery, window, document);

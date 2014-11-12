@@ -1,3 +1,11 @@
+//---------------------------------------------------------------------
+// (C) Copyright 2014 Denison Linus
+//
+// Author: Denison Linus
+// Email: dlmtavar@gmail.com
+//
+//---------------------------------------------------------------------
+
 document.addEventListener('DOMContentLoaded', function () {
     // set the initial state of the checkbox
     var input = document.getElementById('lh-form-checkbox');
