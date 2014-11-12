@@ -77,7 +77,7 @@ var highlighter = {
             var hash = 0,
                 char = 0
             ;
-            if (str.length == 0) return hash;
+            if (str.length === 0) return hash;
             for (var i = 0, j = str.length; i < j; i++) {
                 char = str.charCodeAt(i);
                 hash = ((hash<<5)-hash)+char;
@@ -94,11 +94,11 @@ var highlighter = {
                 this.cache = {};
             }
             var all = window.getComputedStyle(ele),
-                styles = {font: all.font}
+                styles = {font: all.font},
                 hash = hashKey(JSON.stringify(styles))
             ;
             if(!(hash in this.cache)) {
-                for(key in styles) {
+                for (key in styles) {
                     this.$fake[0].style[key] = styles[key];
                 }
                 this.cache[hash] = this.$fake.height();
@@ -147,13 +147,14 @@ var highlighter = {
                 marginTopBottom = 0,
                 i = 0,
                 j = 0,
+                len = 0,
                 all = null
             ;
-            for(i = 0; i < Items.length; i++) {
+            for (i = 0, len = Items.length; i < len; i++) {
                 //rect = Items[i].getClientRects()[0];
                 rect = Items[i].getBoundingClientRect();
                 //addClientRectsOverlay(Items[i]);
-                if(rect) {
+                if (rect) {
                     all = window.getComputedStyle(Items[i]),
                     paddingTop = parseFloat(all.paddingTop.replace('px', ''));
                     paddingBottom = parseFloat(all.paddingBottom.replace('px', ''));
@@ -162,7 +163,7 @@ var highlighter = {
                     left = rect.left + scrollLeft;
                     //N = Math.ceil(rect.height / height);
                     N = Math.round((rect.height-(paddingTop+paddingBottom)) / height, 0);
-                    for(j = 0; j < N; j++) {
+                    for (j = 0; j < N; j++) {
                         top = rect.top + paddingTop + scrollTop + (height * j);
                         index.push({i:i, j:j, n:N, top:top, left:left, height:height, width:width});
                     }
@@ -175,7 +176,7 @@ var highlighter = {
             //window.scrollTo(0,top);
         };
         var moveElement = function(inc) {
-            if(!self.Enabled || !self.ExtentionsEnabled) {
+            if (!self.Enabled || !self.ExtentionsEnabled) {
                 return;
             }
             self.hideHighLighter();
@@ -187,10 +188,10 @@ var highlighter = {
                 top = Math.floor(Index[I].top),
                 bottom = Math.ceil(Index[I].top+Index[I].height)
             ;
-            if(bottom > scrollTop+scrollHeight) {
+            if (bottom > scrollTop+scrollHeight) {
                 scrollPage(top - 50);
             } else {
-                if(top < scrollTop) {
+                if (top < scrollTop) {
                     scrollPage(top - scrollHeight + 50);
                 }
             }
@@ -200,11 +201,12 @@ var highlighter = {
             //hideHighLighter();
             var lastIndex = Index[I].i,
                 percent = Index[I].j / Index[I].n,
-                i = 0
+                i = 0,
+                len = 0
             ;
             makeIndex();
-            for(i = 0; i < Index.length; i++) {
-                if(Index[i].i === lastIndex) {
+            for (i = 0, len = Index.length; i < len; i++) {
+                if (Index[i].i === lastIndex) {
                     I = i + Math.round(percent*Index[i].n, 0);
                     break;
                 }
@@ -239,6 +241,7 @@ var highlighter = {
         $(document).on('dblclick', self.Elements, function(e) {
             var x = -1,
                 i = 0,
+                len = 0,
                 I_ = -1,
                 $this = $(this)[0],
                 rect = null,
@@ -246,19 +249,19 @@ var highlighter = {
             ;
             //I = 0;
             self.start();
-            for(i = 0; i < Items.length; i++) {
-                if(Items[i] == $this) {
+            for (i = 0, len = Items.length; i < len; i++) {
+                if (Items[i] == $this) {
                     x = i;
                     break;
                 }
             }
-            if(x > -1) {
+            if (x > -1) {
                 //rect = Items[x].getClientRects()[0];
                 rect = Items[x].getBoundingClientRect();
-                if(rect) {
+                if (rect) {
                     percent = (e.clientY-rect.top)/rect.height;
-                    for(i = 0; i < Index.length; i++) {
-                        if(Index[i].i === x) {
+                    for (i = 0, len = Index.length; i < len; i++) {
+                        if (Index[i].i === x) {
                             I_ = i + Math.floor(percent*Index[i].n);
                             break;
                         }
@@ -284,7 +287,7 @@ var highlighter = {
 };
 
 function startHighlighter() {
-    if(!this.Created) {
+    if (!this.Created) {
         highlighter.create();
         this.Created = true;
     }
@@ -301,7 +304,6 @@ function stopHighlighter() {
 ;(function($, window, document, undefined) {
 
     $(document).ready(function() {
-
         chrome.storage.local.get('lh_is_enabled', function(items) {
             var lh_is_enabled = ('lh_is_enabled' in items) ? items['lh_is_enabled'] : false;
             if (lh_is_enabled){
@@ -310,16 +312,14 @@ function stopHighlighter() {
                 stopHighlighter();
             }
         });
-
         chrome.storage.onChanged.addListener(function(changes, namespace) {
             var lh_is_enabled = ('lh_is_enabled' in changes) ? changes['lh_is_enabled'] : false;
-            if(lh_is_enabled.newValue) {
+            if (lh_is_enabled.newValue) {
                 startHighlighter();
             } else {
                 stopHighlighter();
             }
         });
-
     });
 
 })(window.jQuery, window, document);
