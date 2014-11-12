@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var input = document.getElementById('lh-form-checkbox');
     chrome.storage.local.get('lh_is_enabled', function(items) {
         var lh_is_enabled = ('lh_is_enabled' in items) ? items['lh_is_enabled'] : false;
-        if(lh_is_enabled){
+        if(lh_is_enabled) {
             input.checked = true;
         } else {
             input.checked = false;
@@ -19,6 +19,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     input.addEventListener('change', function(){
         chrome.storage.local.set({'lh_is_enabled': input.checked});
-    });  
-  
+    });
 });
