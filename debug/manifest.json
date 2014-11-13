@@ -3,7 +3,7 @@
   "manifest_version": 2,
   "name": "Reading Ruler",
   "description": "This is a simple reading ruler, useful when you are reading long texts on web.",
-  "version": "1.3",
+  "version": "1.4",
   "icons": {
     "128": "icon.png"
   },

@@ -6,15 +6,24 @@
 //
 //---------------------------------------------------------------------
 
-var highlighter = {
+var Highlighter = {
 	
     ExtentionsEnabled: false,
     Enabled: false,
     Elements: ':header, p, pre',
     HightlighterID: 'highlighter',
+    Color: '#ffff00',
     Opacity: 0.2,
+    Shadow: 'black 0px 0px 15px',
     MaxZIndex: 2147483647,
 	
+    updateHighLighter: function() {
+        $('#'+this.HightlighterID).css({
+            'background-color': this.Color,
+            'opacity': this.Opacity,
+            'box-shadow': this.Shadow,
+        });
+    },
     hideHighLighter: function() {
         $('#'+this.HightlighterID).hide();
     },
@@ -31,16 +40,27 @@ var highlighter = {
             .attr('id', this.HightlighterID)
             .css({
                 'position': 'absolute',
-                //'width': '100%',
-                'background-color': 'yellow',
-                'opacity': this.Opacity,
+                'border-radius': '25px',
                 'z-index': this.MaxZIndex,
-                'box-shadow': 'black 0px 0px 15px',
-                'border-radius': '25px'
+                'background-color': this.Color,
+                'opacity': this.Opacity,
+                'box-shadow': this.Shadow,
             })
             .hide()
             .appendTo(document.body)
         ;
+    },
+    setColor: function(color) {
+        this.Color = color;
+        this.updateHighLighter();
+    },
+    setOpacity: function(opacity) {
+        this.Opacity = opacity;
+        this.updateHighLighter();
+    },
+    setShadow: function(shadow) {
+        this.Shadow = shadow;
+        this.updateHighLighter();
     },
     setExtentionsEnabled: function(value) {
         this.ExtentionsEnabled = value;
@@ -286,40 +306,84 @@ var highlighter = {
     }
 };
 
-function startHighlighter() {
+function HighlighterStart() {
     if (!this.Created) {
-        highlighter.create();
+        Highlighter.create();
         this.Created = true;
     }
-    highlighter.setExtentionsEnabled(true);
+    Highlighter.setExtentionsEnabled(true);
     //highlighter.start();
-    highlighter.stop();
+    Highlighter.stop();
 }
-function stopHighlighter() {
-    highlighter.setExtentionsEnabled(false);
-    highlighter.stop();
+function HighlighterStop() {
+    Highlighter.setExtentionsEnabled(false);
+    Highlighter.stop();
+}
+function HighlighterColor(color) {
+    Highlighter.setColor(color);
+}
+function HighlighterOpacity(opacity) {
+    Highlighter.setOpacity(opacity / 100.0);
+}
+function HighlighterShadow(shadow) {
+    Highlighter.setShadow(shadow ? 'black 0px 0px 15px' : 'none');
 }
 
 //-----------------------------------------------------------------------------
 ;(function($, window, document, undefined) {
 
     $(document).ready(function() {
-        chrome.storage.local.get('lh_is_enabled', function(items) {
-            var lh_is_enabled = ('lh_is_enabled' in items) ? items['lh_is_enabled'] : false;
-            if (lh_is_enabled){
-                startHighlighter();
+    
+        chrome.storage.local.get([
+            'hlEnabled',
+            'hlColor',
+            'hlOpacity',
+            'hlShadow'
+        ], function(items) {
+            if (items.hlEnabled) {
+                HighlighterStart();
             } else {
-                stopHighlighter();
+                HighlighterStop();
             }
+            if (items.hlColor) {
+                HighlighterColor(items.hlColor);
+            }
+            if (items.hlOpacity) {
+                HighlighterOpacity(items.hlOpacity);
+            }             
+            if (items.hlShadow) {
+                HighlighterShadow(true);
+            } else {
+                HighlighterShadow(false);
+            }              
         });
         chrome.storage.onChanged.addListener(function(changes, namespace) {
-            var lh_is_enabled = ('lh_is_enabled' in changes) ? changes['lh_is_enabled'] : false;
-            if (lh_is_enabled.newValue) {
-                startHighlighter();
-            } else {
-                stopHighlighter();
+            if (changes.hlEnabled) {
+                if(changes.hlEnabled.newValue) {
+                    HighlighterStart();
+                } else {
+                    HighlighterStop();
+                }
             }
+            if (changes.hlColor) {
+                if(changes.hlColor.newValue) {
+                    HighlighterColor(changes.hlColor.newValue);
+                }
+            }
+            if (changes.hlOpacity) {
+                if(changes.hlOpacity.newValue) {
+                    HighlighterOpacity(changes.hlOpacity.newValue);
+                }
+            }             
+            if (changes.hlShadow) {
+                if(changes.hlShadow.newValue) {
+                    HighlighterShadow(true);
+                } else {
+                    HighlighterShadow(false);
+                }
+            }        
         });
+        
     });
 
 })(window.jQuery, window, document);

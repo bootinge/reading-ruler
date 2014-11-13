@@ -9,6 +9,11 @@
 // when the extension is first installed
 chrome.runtime.onInstalled.addListener(function(details) {
     
-    chrome.storage.local.set({'lh_is_enabled': true});
+    chrome.storage.local.set({
+        'hlEnabled': true,
+        'hlColor': '#ffff00',
+        'hlOpacity': '20',
+        'hlShadow': true,
+    });
     
 });
